@@ -4,7 +4,8 @@
   "description": "Demo project for Editor.js library",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [
     "editorjs",
@@ -29,5 +30,8 @@
     "@editorjs/underline": "^1.2.1",
     "@editorjs/warning": "^1.4.0",
     "editorjs-text-color-plugin": "^2.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
