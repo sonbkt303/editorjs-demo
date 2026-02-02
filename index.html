@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor.js Demo</title>
+    <link rel="stylesheet" href="node_modules/katex/dist/katex.min.css">
+    <link rel="stylesheet" href="node_modules/editorjs-latex/dist/editorjs-latex.bundle.css">
     <style>
         * {
             margin: 0;
@@ -187,6 +189,8 @@
     <script src="node_modules/@editorjs/marker/dist/marker.umd.js"></script>
     <script src="node_modules/@editorjs/inline-code/dist/inline-code.umd.js"></script>
     <script src="node_modules/editorjs-text-color-plugin/dist/bundle.js"></script>
+    <script src="node_modules/katex/dist/katex.min.js"></script>
+    <script src="node_modules/editorjs-latex/dist/editorjs-latex.bundle.js"></script>
 
     <script>
         // Debug: Check if ColorPlugin is loaded
@@ -616,6 +620,18 @@
                     }
                 },
                 {
+                    "type": "math",
+                    "data": {
+                        "text": "E = mc^2"
+                    }
+                },
+                {
+                    "type": "math",
+                    "data": {
+                        "text": "\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"
+                    }
+                },
+                {
                     "type": "code",
                     "data": {
                         "code": "const editor = new EditorJS({\n  holder: 'editorjs',\n  tools: {\n    header: Header,\n    list: List\n  }\n});"
@@ -709,7 +725,11 @@
                     config: {
                         endpoint: 'http://localhost:8008/fetchUrl' // Mock endpoint
                     }
-                }
+                },
+                math: {
+                    class: EJLaTeX,
+                    shortcut: 'CMD+SHIFT+M'
+                }   
             };
 
             // Add color tools only if plugin is available

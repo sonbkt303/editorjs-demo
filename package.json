@@ -29,7 +29,9 @@
     "@editorjs/table": "^2.3.0",
     "@editorjs/underline": "^1.2.1",
     "@editorjs/warning": "^1.4.0",
-    "editorjs-text-color-plugin": "^2.0.4"
+    "editorjs-latex": "^1.0.5",
+    "editorjs-text-color-plugin": "^2.0.4",
+    "katex": "^0.16.28"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
