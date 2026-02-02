@@ -150,6 +150,13 @@
         .cdx-text-color {
             color: inherit;
         }
+
+        /* Inline math styles */
+        .inline-math {
+            display: inline-block;
+            margin: 0 2px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -412,6 +419,122 @@
 
             static get shortcut() {
                 return 'CMD+U';
+            }
+        }
+
+        // Custom Inline Math Tool
+        class InlineMathTool {
+            static get isInline() {
+                return true;
+            }
+
+            static get sanitize() {
+                return {
+                    span: {
+                        class: 'inline-math'
+                    }
+                };
+            }
+
+            get state() {
+                return this._state;
+            }
+
+            set state(state) {
+                this._state = state;
+                this.button.classList.toggle('ce-inline-tool--active', state);
+            }
+
+            constructor({ api }) {
+                this.api = api;
+                this.button = null;
+                this._state = false;
+                this.tag = 'SPAN';
+                this.class = 'inline-math';
+            }
+
+            render() {
+                this.button = document.createElement('button');
+                this.button.type = 'button';
+                this.button.innerHTML = '<span style="font-family: serif; font-style: italic;">∫</span>';
+                this.button.classList.add('ce-inline-tool');
+                this.button.title = 'Inline Math (LaTeX)';
+                return this.button;
+            }
+
+            surround(range) {
+                if (this.state) {
+                    this.unwrap(range);
+                    return;
+                }
+
+                // Prompt user for LaTeX expression
+                const latex = prompt('Enter LaTeX equation (e.g., x^2, \\frac{a}{b}, \\sqrt{2}):', '');
+                if (!latex) return;
+
+                this.wrap(range, latex);
+            }
+
+            wrap(range, latex) {
+                const span = document.createElement(this.tag);
+                span.classList.add(this.class);
+                span.setAttribute('data-latex', latex);
+                
+                // Render using KaTeX
+                try {
+                    katex.render(latex, span, {
+                        throwOnError: false,
+                        displayMode: false
+                    });
+                } catch (e) {
+                    span.textContent = latex;
+                }
+                
+                range.deleteContents();
+                range.insertNode(span);
+                
+                // Move cursor after the math
+                range.setStartAfter(span);
+                range.setEndAfter(span);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+
+            unwrap(range) {
+                const span = this.api.selection.findParentTag(this.tag, this.class);
+                if (!span) return;
+                
+                const latex = span.getAttribute('data-latex') || span.textContent;
+                const newLatex = prompt('Edit LaTeX equation:', latex);
+                
+                if (newLatex === null) return; // User cancelled
+                
+                if (newLatex === '') {
+                    // Delete the math
+                    const text = document.createTextNode('');
+                    span.parentNode.replaceChild(text, span);
+                } else {
+                    // Update the math
+                    span.setAttribute('data-latex', newLatex);
+                    try {
+                        katex.render(newLatex, span, {
+                            throwOnError: false,
+                            displayMode: false
+                        });
+                    } catch (e) {
+                        span.textContent = newLatex;
+                    }
+                }
+            }
+
+            checkState() {
+                const span = this.api.selection.findParentTag(this.tag, this.class);
+                this.state = !!span;
+            }
+
+            static get shortcut() {
+                return 'CMD+M';
             }
         }
 
@@ -690,6 +813,10 @@
                 inlineCode: {
                     class: InlineCode,
                     shortcut: 'CMD+SHIFT+C'
+                },
+                inlineMath: {
+                    class: InlineMathTool,
+                    shortcut: 'CMD+M'
                 },
                 bold: {
                     class: BoldInlineTool,
