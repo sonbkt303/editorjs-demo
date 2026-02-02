@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor.js Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .editor-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        #editorjs {
+            min-height: 400px;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .output.show {
+            display: block;
+        }
+
+        .output h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .output pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Editor.js custom styling */
+        .ce-toolbar__content,
+        .ce-block__content {
+            max-width: 100%;
+        }
+
+        .codex-editor__redactor {
+            padding-bottom: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Editor.js Demo</h1>
+            <p>A block-styled editor with clean JSON output</p>
+        </header>
+
+        <div class="controls">
+            <button class="btn" onclick="saveData()">💾 Save Data</button>
+            <button class="btn" onclick="clearEditor()">🗑️ Clear Editor</button>
+            <button class="btn" onclick="loadSample()">📄 Load Sample</button>
+        </div>
+
+        <div class="editor-wrapper">
+            <div id="editorjs"></div>
+        </div>
+
+        <div id="output" class="output">
+            <h3>Saved Data (JSON):</h3>
+            <pre id="output-data"></pre>
+        </div>
+    </div>
+
+    <script src="node_modules/@editorjs/editorjs/dist/editorjs.umd.js"></script>
+    <script src="node_modules/@editorjs/header/dist/header.umd.js"></script>
+    <script src="node_modules/@editorjs/list/dist/list.umd.js"></script>
+    <script src="node_modules/@editorjs/image/dist/image.umd.js"></script>
+    <script src="node_modules/@editorjs/checklist/dist/checklist.umd.js"></script>
+    <script src="node_modules/@editorjs/quote/dist/quote.umd.js"></script>
+    <script src="node_modules/@editorjs/code/dist/code.umd.js"></script>
+    <script src="node_modules/@editorjs/embed/dist/embed.umd.js"></script>
+    <script src="node_modules/@editorjs/table/dist/table.umd.js"></script>
+    <script src="node_modules/@editorjs/link/dist/link.umd.js"></script>
+    <script src="node_modules/@editorjs/warning/dist/warning.umd.js"></script>
+    <script src="node_modules/@editorjs/marker/dist/marker.umd.js"></script>
+    <script src="node_modules/@editorjs/inline-code/dist/inline-code.umd.js"></script>
+
+    <script>
+        let editor;
+
+        // Sample data for demo
+        const sampleData = {
+            "time": 1672531200000,
+            "blocks": [
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "Welcome to Editor.js! 🎉",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Editor.js is a <mark class=\"cdx-marker\">block-styled</mark> editor that outputs clean JSON data. It's perfect for creating rich content with a great user experience."
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "Key Features",
+                        "level": 3
+                    }
+                },
+                {
+                    "type": "list",
+                    "data": {
+                        "style": "unordered",
+                        "items": [
+                            "Clean and semantic JSON output",
+                            "Multiple block types support",
+                            "Extensible with custom plugins",
+                            "Mobile-friendly interface"
+                        ]
+                    }
+                },
+                {
+                    "type": "checklist",
+                    "data": {
+                        "items": [
+                            {
+                                "text": "Install Editor.js",
+                                "checked": true
+                            },
+                            {
+                                "text": "Try different block types",
+                                "checked": false
+                            },
+                            {
+                                "text": "Build something awesome",
+                                "checked": false
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "quote",
+                    "data": {
+                        "text": "Editor.js is the perfect tool for creating structured content.",
+                        "caption": "Happy Developer",
+                        "alignment": "left"
+                    }
+                },
+                {
+                    "type": "code",
+                    "data": {
+                        "code": "const editor = new EditorJS({\n  holder: 'editorjs',\n  tools: {\n    header: Header,\n    list: List\n  }\n});"
+                    }
+                }
+            ],
+            "version": "2.29.1"
+        };
+
+        // Initialize Editor.js
+        function initEditor(data = null) {
+            editor = new EditorJS({
+                holder: 'editorjs',
+                autofocus: true,
+                placeholder: 'Start typing or click + to add a block...',
+                data: data,
+                tools: {
+                    header: {
+                        class: Header,
+                        inlineToolbar: true,
+                        config: {
+                            placeholder: 'Enter a header',
+                            levels: [1, 2, 3, 4, 5, 6],
+                            defaultLevel: 2
+                        }
+                    },
+                    list: {
+                        class: List,
+                        inlineToolbar: true,
+                        config: {
+                            defaultStyle: 'unordered'
+                        }
+                    },
+                    checklist: {
+                        class: Checklist,
+                        inlineToolbar: true
+                    },
+                    quote: {
+                        class: Quote,
+                        inlineToolbar: true,
+                        config: {
+                            quotePlaceholder: 'Enter a quote',
+                            captionPlaceholder: 'Quote author'
+                        }
+                    },
+                    code: {
+                        class: CodeTool,
+                        config: {
+                            placeholder: 'Enter code'
+                        }
+                    },
+                    warning: {
+                        class: Warning,
+                        inlineToolbar: true,
+                        config: {
+                            titlePlaceholder: 'Title',
+                            messagePlaceholder: 'Message'
+                        }
+                    },
+                    marker: {
+                        class: Marker,
+                        shortcut: 'CMD+SHIFT+M'
+                    },
+                    inlineCode: {
+                        class: InlineCode,
+                        shortcut: 'CMD+SHIFT+C'
+                    },
+                    table: {
+                        class: Table,
+                        inlineToolbar: true
+                    },
+                    embed: {
+                        class: Embed,
+                        config: {
+                            services: {
+                                youtube: true,
+                                vimeo: true,
+                                twitter: true
+                            }
+                        }
+                    },
+                    linkTool: {
+                        class: LinkTool,
+                        config: {
+                            endpoint: 'http://localhost:8008/fetchUrl' // Mock endpoint
+                        }
+                    }
+                },
+                onChange: () => {
+                    console.log('Content changed');
+                }
+            });
+        }
+
+        // Save editor data
+        async function saveData() {
+            try {
+                const outputData = await editor.save();
+                document.getElementById('output-data').textContent = JSON.stringify(outputData, null, 2);
+                document.getElementById('output').classList.add('show');
+                console.log('Saved data:', outputData);
+            } catch (error) {
+                console.error('Saving failed:', error);
+                alert('Failed to save data!');
+            }
+        }
+
+        // Clear editor
+        async function clearEditor() {
+            if (confirm('Are you sure you want to clear the editor?')) {
+                await editor.clear();
+                document.getElementById('output').classList.remove('show');
+            }
+        }
+
+        // Load sample data
+        async function loadSample() {
+            if (editor) {
+                await editor.destroy();
+            }
+            initEditor(sampleData);
+        }
+
+        // Initialize editor on page load
+        initEditor(sampleData);
+    </script>
+</body>
+</html>
