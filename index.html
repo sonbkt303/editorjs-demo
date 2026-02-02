@@ -789,6 +789,12 @@
                                 return;
                             }
 
+                            // Save the current selection
+                            const selection = window.getSelection();
+                            if (!selection.rangeCount) return;
+                            
+                            const savedRange = selection.getRangeAt(0).cloneRange();
+
                             const picker = document.createElement('div');
                             picker.className = 'color-picker-popup';
                             picker.style.cssText = `
@@ -804,6 +810,32 @@
                                 max-width: 180px;
                             `;
 
+                            const applyColor = (selectedColor) => {
+                                this.color = selectedColor;
+                                this.colorBar.style.background = selectedColor;
+                                
+                                // Restore selection and apply color
+                                selection.removeAllRanges();
+                                selection.addRange(savedRange);
+                                
+                                // Apply the color to the selected text
+                                const existingMark = this.api.selection.findParentTag(this.parentTag);
+                                if (existingMark) {
+                                    // Update existing mark color
+                                    if (this.pluginType === 'marker') {
+                                        existingMark.style.backgroundColor = selectedColor;
+                                    } else {
+                                        existingMark.style.color = selectedColor;
+                                    }
+                                } else {
+                                    // Create new mark
+                                    const range = selection.getRangeAt(0);
+                                    this.wrap(range);
+                                }
+                                
+                                picker.remove();
+                            };
+
                             // Add custom color picker first
                             if (this.hasCustomPicker) {
                                 const customBtn = document.createElement('input');
@@ -811,9 +843,7 @@
                                 customBtn.value = this.color;
                                 customBtn.style.cssText = 'width: 24px; height: 24px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; padding: 0;';
                                 customBtn.addEventListener('input', (event) => {
-                                    this.color = event.target.value;
-                                    this.colorBar.style.background = this.color;
-                                    picker.remove();
+                                    applyColor(event.target.value);
                                 });
                                 picker.appendChild(customBtn);
                             }
@@ -829,10 +859,9 @@
                                     border-radius: 4px;
                                     cursor: pointer;
                                 `;
-                                btn.addEventListener('click', () => {
-                                    this.color = color;
-                                    this.colorBar.style.background = color;
-                                    picker.remove();
+                                btn.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    applyColor(color);
                                 });
                                 picker.appendChild(btn);
                             });
