@@ -17,6 +17,7 @@ const mimeTypes = {
     '.ico': 'image/x-icon'
 };
 
+
 const server = http.createServer((req, res) => {
     console.log(`${req.method} ${req.url}`);
 
