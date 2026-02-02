@@ -407,101 +407,127 @@
             static get sanitize() {
                 return {
                     span: {
-                        class: true
+                        class: ['cdx-font-small', 'cdx-font-normal', 'cdx-font-large', 'cdx-font-xlarge']
                     }
                 };
+            }
+
+            get state() {
+                return this._state;
+            }
+
+            set state(state) {
+                this._state = state;
+                if (this.button) {
+                    this.button.classList.toggle('ce-inline-tool--active', state);
+                }
             }
 
             constructor({ api }) {
                 this.api = api;
                 this.button = null;
-                this._state = null;
+                this._state = false;
                 this.tag = 'SPAN';
+                this.currentSizeIndex = 1; // Start with Normal
                 this.sizes = [
-                    { name: 'Small', class: 'cdx-font-small' },
-                    { name: 'Normal', class: 'cdx-font-normal' },
-                    { name: 'Large', class: 'cdx-font-large' },
-                    { name: 'X-Large', class: 'cdx-font-xlarge' }
+                    { name: 'S', class: 'cdx-font-small', label: 'Small' },
+                    { name: 'M', class: 'cdx-font-normal', label: 'Normal' },
+                    { name: 'L', class: 'cdx-font-large', label: 'Large' },
+                    { name: 'XL', class: 'cdx-font-xlarge', label: 'X-Large' }
                 ];
             }
 
             render() {
                 this.button = document.createElement('button');
                 this.button.type = 'button';
-                this.button.innerHTML = '📏 Size';
+                this.button.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><text x="0" y="11" font-size="11" font-weight="bold">A</text></svg>';
                 this.button.classList.add('ce-inline-tool');
-                
-                const wrapper = document.createElement('div');
-                wrapper.appendChild(this.button);
-
-                this.button.addEventListener('click', () => {
-                    this.showSizeSelector();
-                });
-
+                this.button.title = 'Font Size (cycles through Small → Normal → Large → X-Large)';
                 return this.button;
             }
 
-            showSizeSelector() {
-                const selection = window.getSelection();
-                if (!selection.toString()) return;
+            surround(range) {
+                if (!range) return;
 
-                const currentSize = this.getCurrentSize();
-                const nextIndex = (this.sizes.findIndex(s => s.class === currentSize) + 1) % this.sizes.length;
-                const nextSize = this.sizes[nextIndex];
+                // Find existing span with font size
+                const existingSpan = this.api.selection.findParentTag(this.tag);
+                let currentIndex = 1; // Default to Normal
 
-                this.applySizeToSelection(nextSize.class);
-            }
-
-            getCurrentSize() {
-                const span = this.api.selection.findParentTag(this.tag);
-                if (span) {
-                    for (const size of this.sizes) {
-                        if (span.classList.contains(size.class)) {
-                            return size.class;
+                if (existingSpan) {
+                    // Find current size
+                    for (let i = 0; i < this.sizes.length; i++) {
+                        if (existingSpan.classList.contains(this.sizes[i].class)) {
+                            currentIndex = i;
+                            break;
                         }
                     }
-                }
-                return null;
-            }
 
-            applySizeToSelection(sizeClass) {
-                const selection = window.getSelection();
-                const range = selection.getRangeAt(0);
-
-                // Remove existing size
-                const existingSpan = this.api.selection.findParentTag(this.tag);
-                if (existingSpan) {
+                    // Remove all size classes
                     this.sizes.forEach(size => {
                         existingSpan.classList.remove(size.class);
                     });
-                    if (sizeClass !== 'cdx-font-normal') {
-                        existingSpan.classList.add(sizeClass);
+
+                    // Move to next size
+                    const nextIndex = (currentIndex + 1) % this.sizes.length;
+                    const nextSize = this.sizes[nextIndex];
+
+                    if (nextIndex === 1) {
+                        // Normal size - unwrap
+                        this.unwrap(range, existingSpan);
                     } else {
-                        // Unwrap for normal size
-                        const parent = existingSpan.parentNode;
-                        while (existingSpan.firstChild) {
-                            parent.insertBefore(existingSpan.firstChild, existingSpan);
-                        }
-                        parent.removeChild(existingSpan);
+                        // Apply new size
+                        existingSpan.classList.add(nextSize.class);
+                        this.api.selection.expandToTag(existingSpan);
                     }
                 } else {
-                    // Create new span
-                    if (sizeClass !== 'cdx-font-normal') {
-                        const selectedText = range.extractContents();
-                        const span = document.createElement(this.tag);
-                        span.classList.add(sizeClass);
-                        span.appendChild(selectedText);
-                        range.insertNode(span);
+                    // No existing span, create new one with Large size (skip Normal)
+                    this.wrap(range, this.sizes[2].class); // Start with Large
+                }
+
+                this.updateButtonState();
+            }
+
+            wrap(range, sizeClass) {
+                const selectedText = range.extractContents();
+                const span = document.createElement(this.tag);
+                span.classList.add(sizeClass);
+                span.appendChild(selectedText);
+                range.insertNode(span);
+                this.api.selection.expandToTag(span);
+            }
+
+            unwrap(range, span) {
+                if (!span) {
+                    span = this.api.selection.findParentTag(this.tag);
+                }
+                if (span) {
+                    const parent = span.parentNode;
+                    while (span.firstChild) {
+                        parent.insertBefore(span.firstChild, span);
                     }
+                    parent.removeChild(span);
                 }
             }
 
-            surround() {
-                // Not used, handled in showSizeSelector
+            checkState() {
+                const span = this.api.selection.findParentTag(this.tag);
+                this.state = !!span;
+                this.updateButtonState();
             }
 
-            checkState() {
-                // Optional state checking
+            updateButtonState() {
+                const span = this.api.selection.findParentTag(this.tag);
+                if (span && this.button) {
+                    for (const size of this.sizes) {
+                        if (span.classList.contains(size.class)) {
+                            this.button.innerHTML = `<strong style="font-size: 12px;">${size.name}</strong>`;
+                            return;
+                        }
+                    }
+                }
+                if (this.button) {
+                    this.button.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><text x="0" y="11" font-size="11" font-weight="bold">A</text></svg>';
+                }
             }
         }
 
