@@ -680,27 +680,94 @@
                 {
                     "type": "header",
                     "data": {
-                        "text": "Welcome to Editor.js! 🎉",
+                        "text": "📚 Editor.js Complete Guide",
+                        "level": 1
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Welcome to this comprehensive guide for using Editor.js! This document demonstrates all available tools and features. Follow along to learn how to create rich, structured content."
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "✍️ Text Formatting",
                         "level": 2
                     }
                 },
                 {
                     "type": "paragraph",
                     "data": {
-                        "text": "Editor.js is a <mark class=\"cdx-marker\">block-styled</mark> editor that outputs clean JSON data. It's perfect for creating rich content with a great user experience."
+                        "text": "Select text to access the inline toolbar. You can make text <b class=\"cdx-bold\">bold</b>, <i class=\"cdx-italic\">italic</i>, <u class=\"cdx-underline\">underlined</u>, or apply <code class=\"inline-code\">inline code</code> formatting."
                     }
                 },
                 {
                     "type": "paragraph",
                     "data": {
-                        "text": "You can now apply <b class=\"cdx-bold\">bold</b>, <i class=\"cdx-italic\">italic</i>, <u class=\"cdx-underline\">underline</u>, <span class=\"cdx-font-large\">different font sizes</span>, and <span style=\"color: #FF1744;\">custom text colors</span> to your text!"
+                        "text": "You can also change <span class=\"cdx-font-small\">font size</span> and add <font style=\"color: #FF1744;\">colored text</font> or <mark style=\"background-color: #FFEB3B;\">highlighted background</mark>."
+                    }
+                },
+                {
+                    "type": "warning",
+                    "data": {
+                        "title": "Keyboard Shortcuts",
+                        "message": "Bold (CMD+B), Italic (CMD+I), Underline (CMD+U), Inline Code (CMD+SHIFT+C), Inline Math (CMD+M)"
                     }
                 },
                 {
                     "type": "header",
                     "data": {
-                        "text": "Key Features",
+                        "text": "📝 Headers & Hierarchy",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Use headers to organize your content. Six levels are available:"
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "This is H1 - Main Title",
+                        "level": 1
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "This is H2 - Section Title",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "This is H3 - Subsection",
                         "level": 3
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "This is H4 - Smaller heading",
+                        "level": 4
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "📋 Lists & Checklists",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Create unordered lists for items:"
                     }
                 },
                 {
@@ -708,11 +775,35 @@
                     "data": {
                         "style": "unordered",
                         "items": [
-                            "Clean and semantic JSON output",
-                            "Multiple block types support",
-                            "Extensible with custom plugins",
-                            "Mobile-friendly interface"
+                            "First item in the list",
+                            "Second item with details",
+                            "Third item for examples",
+                            "You can add as many as needed"
                         ]
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Or ordered lists for sequential steps:"
+                    }
+                },
+                {
+                    "type": "list",
+                    "data": {
+                        "style": "ordered",
+                        "items": [
+                            "First step in the process",
+                            "Second step to follow",
+                            "Third step to complete",
+                            "Final step"
+                        ]
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Use checklists for tasks and to-dos:"
                     }
                 },
                 {
@@ -720,26 +811,106 @@
                     "data": {
                         "items": [
                             {
-                                "text": "Install Editor.js",
+                                "text": "Learn basic text formatting",
                                 "checked": true
                             },
                             {
-                                "text": "Try different block types",
+                                "text": "Try creating lists",
+                                "checked": true
+                            },
+                            {
+                                "text": "Add images and media",
                                 "checked": false
                             },
                             {
-                                "text": "Build something awesome",
+                                "text": "Insert code blocks",
+                                "checked": false
+                            },
+                            {
+                                "text": "Use math equations",
                                 "checked": false
                             }
                         ]
                     }
                 },
                 {
+                    "type": "header",
+                    "data": {
+                        "text": "💬 Quotes & Callouts",
+                        "level": 2
+                    }
+                },
+                {
                     "type": "quote",
                     "data": {
-                        "text": "Editor.js is the perfect tool for creating structured content.",
-                        "caption": "Happy Developer",
+                        "text": "Editor.js is a block-styled editor with clean JSON output. Perfect for modern web applications that need structured content.",
+                        "caption": "Editor.js Philosophy",
                         "alignment": "left"
+                    }
+                },
+                {
+                    "type": "warning",
+                    "data": {
+                        "title": "Important Note",
+                        "message": "Use warning blocks to highlight important information that users should pay attention to."
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "💻 Code Blocks",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Insert code snippets with proper formatting:"
+                    }
+                },
+                {
+                    "type": "code",
+                    "data": {
+                        "code": "// JavaScript example\nconst editor = new EditorJS({\n  holder: 'editorjs',\n  tools: {\n    header: Header,\n    list: List,\n    code: CodeTool\n  },\n  data: savedData\n});\n\n// Save content\neditor.save().then((outputData) => {\n  console.log('Article data:', outputData);\n});"
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "📊 Tables",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Create tables to organize data in rows and columns:"
+                    }
+                },
+                {
+                    "type": "table",
+                    "data": {
+                        "withHeadings": true,
+                        "content": [
+                            ["Feature", "Shortcut", "Description"],
+                            ["Bold", "CMD+B", "Make text bold"],
+                            ["Italic", "CMD+I", "Make text italic"],
+                            ["Inline Code", "CMD+SHIFT+C", "Format as code"],
+                            ["Inline Math", "CMD+M", "Insert equation"]
+                        ]
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "🔢 Mathematical Equations",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Add block-level math equations using LaTeX notation (CMD+SHIFT+M):"
                     }
                 },
                 {
@@ -749,15 +920,96 @@
                     }
                 },
                 {
-                    "type": "math",
+                    "type": "paragraph",
                     "data": {
-                        "text": "\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"
+                        "text": "The quadratic formula:"
                     }
                 },
                 {
-                    "type": "code",
+                    "type": "math",
                     "data": {
-                        "code": "const editor = new EditorJS({\n  holder: 'editorjs',\n  tools: {\n    header: Header,\n    list: List\n  }\n});"
+                        "text": "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Integration example:"
+                    }
+                },
+                {
+                    "type": "math",
+                    "data": {
+                        "text": "\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}"
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "You can also add inline math within paragraphs using CMD+M while selecting text. For example: the Pythagorean theorem a² + b² = c² is fundamental in geometry."
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "🎨 Color & Styling",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Select text and use the color picker to add <font style=\"color: #FF1744;\">red</font>, <font style=\"color: #2979FF;\">blue</font>, <font style=\"color: #00E676;\">green</font>, or any custom color to your text."
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Use the marker tool for <mark style=\"background-color: #FFEB3B;\">yellow highlights</mark>, <mark style=\"background-color: #FF5722;\">orange emphasis</mark>, or <mark style=\"background-color: #9C27B0;\">purple backgrounds</mark>."
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "⚡ Quick Tips",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "list",
+                    "data": {
+                        "style": "unordered",
+                        "items": [
+                            "Press <b>+ button</b> or <b>Tab</b> to add new blocks",
+                            "Use <b>CMD+B</b>, <b>CMD+I</b>, <b>CMD+U</b> for quick formatting",
+                            "Press <b>CMD+M</b> to insert inline math equations",
+                            "Press <b>CMD+SHIFT+M</b> to add a math block",
+                            "Click dropdown arrow on color tools to open color picker",
+                            "Select text first, then apply formatting",
+                            "Drag blocks by the handle to reorder them",
+                            "Press <b>Backspace</b> on empty block to delete it"
+                        ]
+                    }
+                },
+                {
+                    "type": "header",
+                    "data": {
+                        "text": "📤 Saving Your Work",
+                        "level": 2
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "Click the <b>💾 Save Data</b> button above to see the JSON output. This structured data can be easily stored in a database and rendered consistently across different platforms."
+                    }
+                },
+                {
+                    "type": "quote",
+                    "data": {
+                        "text": "Start creating your own content by clicking 🗑️ Clear Editor and begin typing!",
+                        "caption": "Get Started",
+                        "alignment": "center"
                     }
                 }
             ],
