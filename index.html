@@ -114,6 +114,35 @@
         .codex-editor__redactor {
             padding-bottom: 0 !important;
         }
+
+        /* Custom inline tool styles */
+        .cdx-bold {
+            font-weight: bold;
+        }
+
+        .cdx-italic {
+            font-style: italic;
+        }
+
+        .cdx-underline {
+            text-decoration: underline;
+        }
+
+        .cdx-font-small {
+            font-size: 0.85em;
+        }
+
+        .cdx-font-normal {
+            font-size: 1em;
+        }
+
+        .cdx-font-large {
+            font-size: 1.25em;
+        }
+
+        .cdx-font-xlarge {
+            font-size: 1.5em;
+        }
     </style>
 </head>
 <body>
@@ -154,6 +183,328 @@
     <script src="node_modules/@editorjs/inline-code/dist/inline-code.umd.js"></script>
 
     <script>
+        // Custom Bold Inline Tool
+        class BoldInlineTool {
+            static get isInline() {
+                return true;
+            }
+
+            static get sanitize() {
+                return {
+                    b: {},
+                    strong: {}
+                };
+            }
+
+            get state() {
+                return this._state;
+            }
+
+            set state(state) {
+                this._state = state;
+                this.button.classList.toggle('ce-inline-tool--active', state);
+            }
+
+            constructor({ api }) {
+                this.api = api;
+                this.button = null;
+                this._state = false;
+                this.tag = 'B';
+                this.class = 'cdx-bold';
+            }
+
+            render() {
+                this.button = document.createElement('button');
+                this.button.type = 'button';
+                this.button.innerHTML = '<b>B</b>';
+                this.button.classList.add('ce-inline-tool');
+                return this.button;
+            }
+
+            surround(range) {
+                if (this.state) {
+                    this.unwrap(range);
+                    return;
+                }
+                this.wrap(range);
+            }
+
+            wrap(range) {
+                const selectedText = range.extractContents();
+                const mark = document.createElement(this.tag);
+                mark.classList.add(this.class);
+                mark.appendChild(selectedText);
+                range.insertNode(mark);
+                this.api.selection.expandToTag(mark);
+            }
+
+            unwrap(range) {
+                const mark = this.api.selection.findParentTag(this.tag, this.class);
+                const text = range.extractContents();
+                mark.remove();
+                range.insertNode(text);
+            }
+
+            checkState() {
+                const mark = this.api.selection.findParentTag(this.tag);
+                this.state = !!mark;
+            }
+
+            static get shortcut() {
+                return 'CMD+B';
+            }
+        }
+
+        // Custom Italic Inline Tool
+        class ItalicInlineTool {
+            static get isInline() {
+                return true;
+            }
+
+            static get sanitize() {
+                return {
+                    i: {},
+                    em: {}
+                };
+            }
+
+            get state() {
+                return this._state;
+            }
+
+            set state(state) {
+                this._state = state;
+                this.button.classList.toggle('ce-inline-tool--active', state);
+            }
+
+            constructor({ api }) {
+                this.api = api;
+                this.button = null;
+                this._state = false;
+                this.tag = 'I';
+                this.class = 'cdx-italic';
+            }
+
+            render() {
+                this.button = document.createElement('button');
+                this.button.type = 'button';
+                this.button.innerHTML = '<i>I</i>';
+                this.button.classList.add('ce-inline-tool');
+                return this.button;
+            }
+
+            surround(range) {
+                if (this.state) {
+                    this.unwrap(range);
+                    return;
+                }
+                this.wrap(range);
+            }
+
+            wrap(range) {
+                const selectedText = range.extractContents();
+                const mark = document.createElement(this.tag);
+                mark.classList.add(this.class);
+                mark.appendChild(selectedText);
+                range.insertNode(mark);
+                this.api.selection.expandToTag(mark);
+            }
+
+            unwrap(range) {
+                const mark = this.api.selection.findParentTag(this.tag, this.class);
+                const text = range.extractContents();
+                mark.remove();
+                range.insertNode(text);
+            }
+
+            checkState() {
+                const mark = this.api.selection.findParentTag(this.tag);
+                this.state = !!mark;
+            }
+
+            static get shortcut() {
+                return 'CMD+I';
+            }
+        }
+
+        // Custom Underline Inline Tool
+        class UnderlineInlineTool {
+            static get isInline() {
+                return true;
+            }
+
+            static get sanitize() {
+                return {
+                    u: {}
+                };
+            }
+
+            get state() {
+                return this._state;
+            }
+
+            set state(state) {
+                this._state = state;
+                this.button.classList.toggle('ce-inline-tool--active', state);
+            }
+
+            constructor({ api }) {
+                this.api = api;
+                this.button = null;
+                this._state = false;
+                this.tag = 'U';
+                this.class = 'cdx-underline';
+            }
+
+            render() {
+                this.button = document.createElement('button');
+                this.button.type = 'button';
+                this.button.innerHTML = '<u>U</u>';
+                this.button.classList.add('ce-inline-tool');
+                return this.button;
+            }
+
+            surround(range) {
+                if (this.state) {
+                    this.unwrap(range);
+                    return;
+                }
+                this.wrap(range);
+            }
+
+            wrap(range) {
+                const selectedText = range.extractContents();
+                const mark = document.createElement(this.tag);
+                mark.classList.add(this.class);
+                mark.appendChild(selectedText);
+                range.insertNode(mark);
+                this.api.selection.expandToTag(mark);
+            }
+
+            unwrap(range) {
+                const mark = this.api.selection.findParentTag(this.tag, this.class);
+                const text = range.extractContents();
+                mark.remove();
+                range.insertNode(text);
+            }
+
+            checkState() {
+                const mark = this.api.selection.findParentTag(this.tag);
+                this.state = !!mark;
+            }
+
+            static get shortcut() {
+                return 'CMD+U';
+            }
+        }
+
+        // Custom Font Size Inline Tool
+        class FontSizeTool {
+            static get isInline() {
+                return true;
+            }
+
+            static get sanitize() {
+                return {
+                    span: {
+                        class: true
+                    }
+                };
+            }
+
+            constructor({ api }) {
+                this.api = api;
+                this.button = null;
+                this._state = null;
+                this.tag = 'SPAN';
+                this.sizes = [
+                    { name: 'Small', class: 'cdx-font-small' },
+                    { name: 'Normal', class: 'cdx-font-normal' },
+                    { name: 'Large', class: 'cdx-font-large' },
+                    { name: 'X-Large', class: 'cdx-font-xlarge' }
+                ];
+            }
+
+            render() {
+                this.button = document.createElement('button');
+                this.button.type = 'button';
+                this.button.innerHTML = '📏 Size';
+                this.button.classList.add('ce-inline-tool');
+                
+                const wrapper = document.createElement('div');
+                wrapper.appendChild(this.button);
+
+                this.button.addEventListener('click', () => {
+                    this.showSizeSelector();
+                });
+
+                return this.button;
+            }
+
+            showSizeSelector() {
+                const selection = window.getSelection();
+                if (!selection.toString()) return;
+
+                const currentSize = this.getCurrentSize();
+                const nextIndex = (this.sizes.findIndex(s => s.class === currentSize) + 1) % this.sizes.length;
+                const nextSize = this.sizes[nextIndex];
+
+                this.applySizeToSelection(nextSize.class);
+            }
+
+            getCurrentSize() {
+                const span = this.api.selection.findParentTag(this.tag);
+                if (span) {
+                    for (const size of this.sizes) {
+                        if (span.classList.contains(size.class)) {
+                            return size.class;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            applySizeToSelection(sizeClass) {
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+
+                // Remove existing size
+                const existingSpan = this.api.selection.findParentTag(this.tag);
+                if (existingSpan) {
+                    this.sizes.forEach(size => {
+                        existingSpan.classList.remove(size.class);
+                    });
+                    if (sizeClass !== 'cdx-font-normal') {
+                        existingSpan.classList.add(sizeClass);
+                    } else {
+                        // Unwrap for normal size
+                        const parent = existingSpan.parentNode;
+                        while (existingSpan.firstChild) {
+                            parent.insertBefore(existingSpan.firstChild, existingSpan);
+                        }
+                        parent.removeChild(existingSpan);
+                    }
+                } else {
+                    // Create new span
+                    if (sizeClass !== 'cdx-font-normal') {
+                        const selectedText = range.extractContents();
+                        const span = document.createElement(this.tag);
+                        span.classList.add(sizeClass);
+                        span.appendChild(selectedText);
+                        range.insertNode(span);
+                    }
+                }
+            }
+
+            surround() {
+                // Not used, handled in showSizeSelector
+            }
+
+            checkState() {
+                // Optional state checking
+            }
+        }
+
         let editor;
 
         // Sample data for demo
@@ -171,6 +522,12 @@
                     "type": "paragraph",
                     "data": {
                         "text": "Editor.js is a <mark class=\"cdx-marker\">block-styled</mark> editor that outputs clean JSON data. It's perfect for creating rich content with a great user experience."
+                    }
+                },
+                {
+                    "type": "paragraph",
+                    "data": {
+                        "text": "You can now apply <b class=\"cdx-bold\">bold</b>, <i class=\"cdx-italic\">italic</i>, <u class=\"cdx-underline\">underline</u>, and <span class=\"cdx-font-large\">different font sizes</span> to your text!"
                     }
                 },
                 {
@@ -287,6 +644,21 @@
                         class: InlineCode,
                         shortcut: 'CMD+SHIFT+C'
                     },
+                    bold: {
+                        class: BoldInlineTool,
+                        shortcut: 'CMD+B'
+                    },
+                    italic: {
+                        class: ItalicInlineTool,
+                        shortcut: 'CMD+I'
+                    },
+                    underline: {
+                        class: UnderlineInlineTool,
+                        shortcut: 'CMD+U'
+                    },
+                    fontSize: {
+                        class: FontSizeTool
+                    },
                     table: {
                         class: Table,
                         inlineToolbar: true
@@ -310,6 +682,9 @@
                 },
                 onChange: () => {
                     console.log('Content changed');
+                },
+                onReady: () => {
+                    console.log('Editor.js is ready to work!');
                 }
             });
         }
